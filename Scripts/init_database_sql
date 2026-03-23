@@ -1,0 +1,50 @@
+-- =============================================
+-- Project: Data Warehouse Setup
+-- Author: Yugandhar Saragadam
+-- Description: Initializes database and schemas 
+--              following Medallion Architecture
+--              (Bronze, Silver, Gold)
+-- =============================================
+
+-- Create Database
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'DataWarehouse')
+BEGIN
+    CREATE DATABASE DataWarehouse;
+END
+GO
+
+-- Use Database
+USE DataWarehouse;
+GO
+
+-- =============================================
+-- Create Schemas
+-- =============================================
+
+-- Bronze Layer: Raw Data (Ingested as-is)
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'bronze')
+BEGIN
+    EXEC('CREATE SCHEMA bronze');
+END
+GO
+
+-- Silver Layer: Cleaned & Transformed Data
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'silver')
+BEGIN
+    EXEC('CREATE SCHEMA silver');
+END
+GO
+
+-- Gold Layer: Business-Level Aggregated Data
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'gold')
+BEGIN
+    EXEC('CREATE SCHEMA gold');
+END
+GO
+
+-- =============================================
+-- Verification
+-- =============================================
+SELECT name AS SchemaName 
+FROM sys.schemas 
+WHERE name IN ('bronze', 'silver', 'gold');
